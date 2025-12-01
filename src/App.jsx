@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import pfp from './images/pfp1.gif';
 import view from './images/viewW.svg';
-import tiktok from './images/tiktok.png';
+import twitter from './images/x.png';
+import insta from './images/insta.png';
 import yt from './images/yt.png';
 import discord from './images/discord.png';
 import cover from './images/cover.png';
@@ -11,187 +12,203 @@ import bg from './videos/car.mp4';
 import git from './images/git2.png';
 
 function App() {
-  const [viewCount, setViewCount] = useState(0);
+  const [viewCount, setViewCount] = useState(5);
   const [currentTime, setCurrentTime] = useState(0);
   const maxTime = 128;
   const [isPlaying, setIsPlaying] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const [isOverlayClicked, setIsOverlayClicked] = useState(false);
-  const [cssLabel, setCssLabel] = useState('Copy W3eklyMC TikTok Username');
-  const [cssLabel1, setCssLabel1] = useState('Copy W3eklyMC IP');
+  const [copyStatus, setCopyStatus] = useState('');
+  const [cssLabel, setCssLabel] = useState('Copy W3eklyMC Ip');
+  const [cssLabel1, setCssLabel1] = useState('Copy W3eklyMC Tiktok Username');
   const [bio, setBio] = useState('');
-  const [entered, setEntered] = useState(false);
+  const [entered, setEntered] = useState(false); // State for animation
 
   // Typewriter effect
-  const bioText = "Owner of W3eklyMC";
+  const [bioText, setBioText] = useState("Owner of W3eklyMC");
   const [index, setIndex] = useState(0);
-  const [typingForward, setTypingForward] = useState(true);
+  const [isTyping, setIsTyping] = useState(true);
 
-  // Typing animation
   useEffect(() => {
     const timer = setInterval(() => {
-      if (typingForward) {
+      if (isTyping) {
         if (index < bioText.length) {
-          setBio(bioText.slice(0, index + 1));
-          setIndex(index + 1);
+          setBio(prevBio => prevBio + bioText.charAt(index));
+          setIndex(prevIndex => prevIndex + 1);
         } else {
-          setTypingForward(false);
+          setIsTyping(false);
         }
       } else {
-        if (index > 0) {
-          setBio(bioText.slice(0, index - 1));
-          setIndex(index - 1);
+        if (index >= 0) {
+          setBio(prevBio => prevBio.slice(0, index));
+          setIndex(prevIndex => prevIndex - 1);
         } else {
-          setTypingForward(true);
+          setIsTyping(true);
         }
       }
-    }, 80);
+    }, 50);
 
-    return () => clearInterval(timer);
-  }, [index, typingForward]);
+    return () => clearInterval(timer); // Cleanup the timer
+  }, [bioText, index, isTyping]);
 
-  // Fetch view count
   useEffect(() => {
     fetch('/increment-view')
-      .then(res => res.json())
+      .then(response => response.json())
       .then(data => setViewCount(data.viewCount))
-      .catch(e => console.error("View fetch error:", e));
+      .catch(error => console.error('Error:', error));
+
+    // Other side effects...
+
   }, []);
 
-  // Audio progress tracking
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.round(seconds % 60);
+    const formattedTime = `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    return formattedTime;
+  }
+
   useEffect(() => {
-    const audio = document.getElementById("audio");
-    if (!audio) return;
+    const audioElement = document.getElementById('audio');
+
+    if (!isPlaying && isOverlayClicked) {
+      audioPlay();
+      setIsPlaying(true);
+    }
 
     const interval = setInterval(() => {
-      setCurrentTime(audio.currentTime);
-      if (audio.currentTime >= maxTime) {
-        audio.currentTime = 0;
+      const elapsedTime = Math.round(audioElement.currentTime);
+      setCurrentTime(elapsedTime);
+
+      if (elapsedTime >= maxTime) {
+        audioElement.currentTime = 0;
+        setCurrentTime(0);
       }
-    }, 500);
+    }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isPlaying, isOverlayClicked, maxTime]);
 
-  const handleCopy = (text, setLabel, defaultLabel) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setLabel("Copied!");
-      setTimeout(() => setLabel(defaultLabel), 1500);
-    });
+  const handleCopyAddress = (address, label) => {
+    navigator.clipboard.writeText(address)
+      .then(() => {
+        setCopyStatus('Copied');
+        setCssLabel('Copied');
+        setTimeout(() => {
+          setCopyStatus('');
+          setCssLabel('Copy BTC Address');
+        }, 2000);
+      })
+      .catch(error => console.error('Error copying address to clipboard:', error));
+  };
+  
+  const handleCopyAddress1 = (address, label) => {
+    navigator.clipboard.writeText(address)
+      .then(() => {
+        setCopyStatus('Copied');
+        setCssLabel1('Copied');
+        setTimeout(() => {
+          setCopyStatus('');
+          setCssLabel1('Copy LTC Address');
+        }, 2000);
+      })
+      .catch(error => console.error('Error copying address to clipboard:', error));
+  };
+  
+  function audioPlay() {
+    var audio = document.getElementById('audio');
+    audio.volume = 1;
+    audio.play();
+  }
+
+  const handlePlayPause = () => {
+    const audioElement = document.getElementById('audio');
+    if (isPlaying) {
+      audioElement.pause();
+    } else {
+      audioElement.play();
+    }
+    setIsPlaying(!isPlaying);
   };
 
   const handleOverlayClick = () => {
     setShowOverlay(false);
     setIsOverlayClicked(true);
-    setEntered(true);
-
-    // Play audio directly inside the click handler (allowed by browser autoplay)
-    const audio = document.getElementById('audio');
-    audio.volume = 1;
-    audio.play();
-    setIsPlaying(true);
-  };
-
-  const handlePlayPause = () => {
-    const audio = document.getElementById("audio");
-    if (isPlaying) audio.pause();
-    else audio.play();
-    setIsPlaying(!isPlaying);
+    audioPlay();
+    setEntered(true); // Trigger the animation
   };
 
   return (
     <div className='app-container'>
-      
       <video autoPlay loop muted className='video-background'>
         <source src={bg} type='video/mp4' />
+        Your browser does not support the video tag.
       </video>
-
       {showOverlay && (
         <div className='overlay' onClick={handleOverlayClick}>
-          <p className='click'>Click anywhere to enter :)</p>
+          <p1 className='click'>Click Anywhere to see my bio :)</p1>
         </div>
       )}
-
       <div className={`main-container ${entered ? 'entered' : ''}`}>
-        
-        <img src={view} className='view' alt="Views" />
-        <p className='num'>{viewCount}</p>
-
-        <img src={pfp} className='pfp' alt="Profile" />
-
-        <div className='info'>
+        <img src={view} className='view' alt="View Icon" />
+        <p1 className='num'>{viewCount}</p1>
+        <img src={pfp} className='pfp' alt="Profile Picture" />
+        <div className='info' >
           <h1 className='name'>W3ekly_Play_TT</h1>
-          <h1 className='bio'>{bio}</h1>
+          <h1 className='bio'>{bio}</h1> {/* Bio with typewriter effect */}
         </div>
-
-        {/* Links */}
         <div className='links'>
           <a href="https://discord.gg/pAS4XgFKaK" target="_blank" rel="noopener noreferrer">
-            <img src={discord} className='link1' alt="Discord" />
+            <img src={discord} className='link1' alt="Twitter" />
           </a>
-
           <a href="https://github.com/weeklydrawing" target="_blank" rel="noopener noreferrer">
             <img src={git} className='link2' alt="GitHub" />
           </a>
-
           <a href="https://tiktok.com/@w3ekly_play_tt" target="_blank" rel="noopener noreferrer">
-            <img src={tiktok} className='link3' alt="TikTok" />
+            <img src={tiktok} className='link3' alt="Tiktok" />
           </a>
-
           <a href="https://www.youtube.com/@W3ekly_play_TT" target="_blank" rel="noopener noreferrer">
             <img src={yt} className='link4' alt="YouTube" />
           </a>
-
-          <a href="https://discord.com/users/1090711200305791046" target="_blank" rel="noopener noreferrer">
-            <img src={discord} className='link5' alt="Discord Profile" />
+          <a href="1090711200305791046" target="_blank" rel="noopener noreferrer">
+            <img src={discord} className='link5' alt="Discord" />
           </a>
         </div>
-
-        {/* Song UI */}
+        <div className='div1'></div>
         <div className='song'>
           <div className='progress-bar-container'>
-            <div className='progress-bar'
-              style={{ width: `${(currentTime / maxTime) * 100}%` }}
-            />
+            <div className='progress-bar' style={{ width: `${(currentTime / maxTime) * 100}%` }} />
           </div>
-
-          <a href='https://soundcloud.com/trapdailysounds/glokk40spaz-sg-lul-ki-stop-playin-prod-by-khroam'
-            target='_blank' rel='noopener noreferrer'>
-            <img src={cover} className='songcover' alt="Song" />
+          <a href='https://soundcloud.com/trapdailysounds/glokk40spaz-sg-lul-ki-stop-playin-prod-by-khroam' target='_blank' rel='noopener noreferrer'>
+            <img src={cover} className='songcover' alt='' />
           </a>
-
           <div className='songinfo'>
-            <p className='songtitle'>Carol Of Bells</p>
-            <p className='artist'>by Mykola Leontovych</p>
-            <p className='album'>on YouTube</p>
+            <p1 className='songtitle'>Carol Of Bells</p1>
+            <p1 className='artist'>by Mykola Leontovych</p1>
+            <p1 className='album' href>on Youtube</p1>
           </div>
-
           <div className='time-label'>
-            {Math.floor(currentTime / 60)}:{String(Math.floor(currentTime % 60)).padStart(2, "0")}
-            /
-            {Math.floor(maxTime / 60)}:{String(maxTime % 60).padStart(2, "0")}
+            {formatTime(currentTime)} / {formatTime(maxTime)}
           </div>
-
           <audio id='audio' src={stop} />
         </div>
-
-        {/* Copy Buttons */}
+        <div className='div2'></div>
         <button
           className='button2'
-          onClick={() => handleCopy('w3eklymc.net', setCssLabel1, 'Copy W3eklyMC IP')}
+          onClick={() => handleCopyAddress1('w3eklymc.net', 'Copy W3eklyMC Ip')}
           data-label={cssLabel1}
         >
-          Server IP
+          LTC
         </button>
-
         <button
           className='button1'
-          onClick={() => handleCopy('@w3eklymc', setCssLabel, 'Copy W3eklyMC TikTok Username')}
+          onClick={() => handleCopyAddress('@w3eklymc', 'Copy W3eklyMC Tiktok Username')}
           data-label={cssLabel}
         >
-          TikTok
+          BTC
         </button>
-
       </div>
     </div>
   );
