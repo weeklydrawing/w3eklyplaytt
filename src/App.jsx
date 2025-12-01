@@ -19,13 +19,13 @@ function App() {
   const [showOverlay, setShowOverlay] = useState(true);
   const [isOverlayClicked, setIsOverlayClicked] = useState(false);
   const [copyStatus, setCopyStatus] = useState('');
-  const [cssLabel, setCssLabel] = useState('Copy BTC Address');
-  const [cssLabel1, setCssLabel1] = useState('Copy LTC Address');
+  const [cssLabel, setCssLabel] = useState('Copy W3eklyMC Ip');
+  const [cssLabel1, setCssLabel1] = useState('Copy W3eklyMC Tiktok Username');
   const [bio, setBio] = useState('');
   const [entered, setEntered] = useState(false); // State for animation
 
   // Typewriter effect
-  const [bioText, setBioText] = useState("Owner of shdw.site");
+  const [bioText, setBioText] = useState("Owner of W3eklyMC");
   const [index, setIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
 
@@ -148,7 +148,7 @@ function App() {
       </video>
       {showOverlay && (
         <div className='overlay' onClick={handleOverlayClick}>
-          <p1 className='click'>Click Anywhere</p1>
+          <p1 className='click'>Click Anywhere to see my bio :)</p1>
         </div>
       )}
       <div className={`main-container ${entered ? 'entered' : ''}`}>
@@ -156,23 +156,23 @@ function App() {
         <p1 className='num'>{viewCount}</p1>
         <img src={pfp} className='pfp' alt="Profile Picture" />
         <div className='info' >
-          <h1 className='name'>shadow</h1>
+          <h1 className='name'>W3ekly_Play_TT</h1>
           <h1 className='bio'>{bio}</h1> {/* Bio with typewriter effect */}
         </div>
         <div className='links'>
-          <a href="https://twitter.com/2HB2QedJXb7055" target="_blank" rel="noopener noreferrer">
-            <img src={twitter} className='link1' alt="Twitter" />
+          <a href="https://discord.gg/pAS4XgFKaK" target="_blank" rel="noopener noreferrer">
+            <img src={discord} className='link1' alt="Twitter" />
           </a>
-          <a href="https://github.com/movemented" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/weeklydrawing" target="_blank" rel="noopener noreferrer">
             <img src={git} className='link2' alt="GitHub" />
           </a>
-          <a href="https://www.instagram.com/movemented/" target="_blank" rel="noopener noreferrer">
-            <img src={insta} className='link3' alt="Instagram" />
+          <a href="https://tiktok.com/@w3ekly_play_tt" target="_blank" rel="noopener noreferrer">
+            <img src={tiktok} className='link3' alt="Tiktok" />
           </a>
-          <a href="https://www.youtube.com/channel/UCbrSndkaflZIa6HaCBHLRvA" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.youtube.com/@W3ekly_play_TT" target="_blank" rel="noopener noreferrer">
             <img src={yt} className='link4' alt="YouTube" />
           </a>
-          <a href="https://discord.com/users/1079862959360184390" target="_blank" rel="noopener noreferrer">
+          <a href="1090711200305791046" target="_blank" rel="noopener noreferrer">
             <img src={discord} className='link5' alt="Discord" />
           </a>
         </div>
@@ -185,9 +185,9 @@ function App() {
             <img src={cover} className='songcover' alt='' />
           </a>
           <div className='songinfo'>
-            <p1 className='songtitle'>Wokeup</p1>
-            <p1 className='artist'>by Kankan</p1>
-            <p1 className='album' href>on Wokeup</p1>
+            <p1 className='songtitle'>Carol Of Bells</p1>
+            <p1 className='artist'>by Mykola Leontovych</p1>
+            <p1 className='album' href>on Youtube</p1>
           </div>
           <div className='time-label'>
             {formatTime(currentTime)} / {formatTime(maxTime)}
@@ -197,14 +197,14 @@ function App() {
         <div className='div2'></div>
         <button
           className='button2'
-          onClick={() => handleCopyAddress1('ltc1qwu5kth29x3ev63fuex4ln873kdwdxdnvw0fvdq', 'LTC Address')}
+          onClick={() => handleCopyAddress1('w3eklymc.net', 'Copy W3eklyMC Ip')}
           data-label={cssLabel1}
         >
           LTC
         </button>
         <button
           className='button1'
-          onClick={() => handleCopyAddress('bc1qmdde26zln58kprcz2fxf7980ad9jfnpxa7ev4p', 'BTC Address')}
+          onClick={() => handleCopyAddress('@w3eklymc', 'Copy W3eklyMC Tiktok Username')}
           data-label={cssLabel}
         >
           BTC
