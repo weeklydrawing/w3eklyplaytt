@@ -10,7 +10,7 @@ import cover from './images/cover.png';
 import stop from './song/stopplayin.mp3';
 import bg from './videos/car.mp4';
 import git from './images/git2.png';
-import tiktok from './image/tiktok.png';
+import tiktok from './images/tiktok.png';
 
 function App() {
   const [viewCount, setViewCount] = useState(5);
