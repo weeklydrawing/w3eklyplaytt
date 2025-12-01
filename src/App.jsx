@@ -12,7 +12,7 @@ import bg from './videos/car.mp4';
 import git from './images/git2.png';
 
 function App() {
-  const [viewCount, setViewCount] = useState(3242);
+  const [viewCount, setViewCount] = useState(5);
   const [currentTime, setCurrentTime] = useState(0);
   const maxTime = 128;
   const [isPlaying, setIsPlaying] = useState(false);
